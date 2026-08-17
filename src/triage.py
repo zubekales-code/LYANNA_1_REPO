@@ -260,6 +260,11 @@ def run() -> dict[str, int]:
                 "category": result["category"],
                 "reason": result["reason"],
                 "status": status,
+                # Musí být přítomné u KAŽDÉHO řádku dávky se stejnou sadou
+                # klíčů jako u duplicitních řádků níž — Supabase bulk zápis
+                # (PostgREST) odmítne dávku, kde se objekty liší v klíčích
+                # (PGRST102 "All object keys must match").
+                "duplicate_of": None,
             }
         )
 
