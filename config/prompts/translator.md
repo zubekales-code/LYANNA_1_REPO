@@ -24,11 +24,31 @@ Cílem není doslovnost, ale text, který působí, jako by byl česky napsaný.
   „naznačuje", ne „dokazuje". Tohle je nejčastější místo, kde se překladem
   ztratí přesnost.
 
+## Formátování
+
+Text obsahuje lehké formátování: `**tučně**`, `*kurzíva*` a seznamy
+s odrážkami (`- `). Tyhle značky **zachovej přesně** — obal kolem
+přeloženého textu, ne kolem originálu. Když je anglicky tučně
+`**baryon number**`, česky bude tučně `**baryonové číslo**` — tučný je
+pojem, ne konkrétní anglická slova.
+
+Počet položek seznamu, počet tučných úseků a jejich přibližná pozice
+(na začátku odstavce jako popisek, uprostřed věty jako důraz) zůstávají
+stejné jako v originále. Nic nepřidávej ani neubírej.
+
 ## Struktura
 
-Zachovej **přesně stejný počet odstavců** a jejich pořadí. Odstavce
-odděluj prázdným řádkem. Nespojuj je ani nerozděluj — frontend na tom
-členění staví a první odstavec používá jako perex.
+Zachovej **přesně stejný počet bloků** (odstavců i seznamů) a jejich
+pořadí. Bloky odděluj prázdným řádkem přesně tak, jak jsou oddělené
+v originále — u seznamu jedním `\n` mezi položkami, jinými bloky dvěma.
+Nespojuj je ani nerozděluj — frontend na tom členění staví a první
+odstavec používá jako perex.
+
+Když je blok krátká otázka jako nadpis (článek může použít tučný nadpis
+ve tvaru otázky), přelož ji jako otázku, kterou by v češtině přirozeně
+položil čtenář — ne jako doslovný převod anglické větné stavby. „Does
+this mean the Moon isn't responsible?" se česky ptá jako „Znamená to, že
+Měsíc za příliv nemůže?", ne mechanicky slovo od slova.
 
 Nic nepřidávej a nic nevynechávej. Žádná vysvětlivka pro české čtenáře,
 žádná poznámka překladatele.

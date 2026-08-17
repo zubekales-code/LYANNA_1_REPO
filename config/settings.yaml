@@ -101,9 +101,10 @@ write:
   max_articles_per_day: 10
 
   # Cílová délka článku ve slovech (měkké vodítko v promptu; tvrdou
-  # pojistkou je max_output_tokens výše).
-  target_words_min: 550
-  target_words_max: 800
+  # pojistkou je max_output_tokens výše). Krátký strukturovaný formát
+  # s tučnými popisky a odrážkami — viz writer.md.
+  target_words_min: 260
+  target_words_max: 350
 
 # --- Zdroje ------------------------------------------------------------------
 sources:
