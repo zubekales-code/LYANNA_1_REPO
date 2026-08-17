@@ -1,0 +1,41 @@
+name: Denní běh
+
+on:
+  schedule:
+    # 05:20 UTC = 07:20 letního / 06:20 zimního času.
+    # Záměrně ne v celou: v celou hodinu je fronta GitHub Actions nejdelší
+    # a spuštění se odkládá i o desítky minut.
+    - cron: "20 5 * * *"
+  workflow_dispatch:
+    # Ruční tlačítko v záložce Actions. Nechávat vždycky — bez něj se
+    # nedá pipeline vyzkoušet jinak než čekáním na cron.
+
+# Dva běhy najednou by si šláply po datech. Druhý počká, nezruší se.
+concurrency:
+  group: lyanna-daily
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    # Pojistka proti běhu, který se zasekne na nereagujícím zdroji.
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalace závislostí
+        run: pip install -r requirements.txt
+
+      - name: Běh pipeline
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+        run: python -m src.main

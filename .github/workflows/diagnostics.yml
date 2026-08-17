@@ -1,0 +1,43 @@
+name: Diagnostika
+
+# Schválně BEZ cronu. Diagnostika se pouští, když něco ověřuješ —
+# ne automaticky na pozadí.
+on:
+  workflow_dispatch:
+    inputs:
+      skip_feeds:
+        description: "Vynechat test všech RSS zdrojů (rychlejší)"
+        type: boolean
+        default: false
+      skip_ai:
+        description: "Vynechat volání OpenAI (nic nestojí)"
+        type: boolean
+        default: false
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalace závislostí
+        run: pip install -r requirements.txt
+
+      - name: Diagnostika
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.skip_feeds }}" = "true" ]; then ARGS="$ARGS --skip-feeds"; fi
+          if [ "${{ inputs.skip_ai }}" = "true" ]; then ARGS="$ARGS --skip-ai"; fi
+          python diagnose.py $ARGS

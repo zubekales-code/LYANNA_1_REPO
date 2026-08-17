@@ -1,0 +1,111 @@
+# ---------------------------------------------------------------------------
+# TAXONOMIE
+#
+# Sedm kategorií, které zná frontend (main.jsx, konstanta CATEGORIES).
+# "ALL" je jen zobrazovací režim webu, ne hodnota v databázi — nikdy se
+# nesmí zapsat do articles.category.
+#
+# U každé kategorie je věta "co tam patří" a věta "co tam nepatří".
+# Ta druhá je důležitější: bez explicitního vymezení hranic model zařazuje
+# hraniční položky pokaždé jinak a kategorie se rozostří.
+#
+# Hranice se schválně nepřekrývají. Když se položka hodí do dvou kategorií,
+# rozhoduje pravidlo v sekci `rules` níž.
+# ---------------------------------------------------------------------------
+
+categories:
+
+  SOCIETY:
+    label_cz: Společnost
+    includes: >
+      Sociologie, psychologie, ekonomie, politologie, antropologie,
+      archeologie a historie. Výzkum lidského chování, institucí a kultury.
+      Metavěda: financování výzkumu, replikační krize, publikační praxe,
+      vědecká politika.
+    excludes: >
+      Politické zpravodajství bez výzkumného základu. Zdravotnictví jako
+      systém (patří do BIOLOGY, pokud jde o biologii, jinak vynechat).
+      Dopady technologií na společnost, kde je jádrem technologie
+      (patří do TECHNOLOGY).
+
+  PHYSICS:
+    label_cz: Fyzika
+    includes: >
+      Částicová a jaderná fyzika, kvantová fyzika a kvantové technologie,
+      optika, termodynamika, kondenzovaná fáze, gravitace a teoretická
+      fyzika. Matematika.
+    excludes: >
+      Astrofyzika a kosmologie, pokud je předmětem konkrétní vesmírný
+      objekt, mise nebo pozorování (patří do SPACE). Materiálový výzkum
+      zaměřený na chemické složení (patří do CHEMISTRY). Aplikovaná
+      elektronika a výpočetní technika (patří do TECHNOLOGY).
+
+  CHEMISTRY:
+    label_cz: Chemie
+    includes: >
+      Organická, anorganická a fyzikální chemie, biochemie, katalýza,
+      polymery, materiálové vědy se zaměřením na složení a syntézu,
+      analytická chemie, léčiva na úrovni molekuly.
+    excludes: >
+      Účinek léčiva na organismus a klinické studie (patří do BIOLOGY).
+      Materiály popisované primárně přes fyzikální vlastnosti, ne složení
+      (patří do PHYSICS). Průmyslová a firemní chemie bez výzkumného obsahu.
+
+  SPACE:
+    label_cz: Vesmír
+    includes: >
+      Astronomie, astrofyzika, kosmologie, planetární věda, exoplanety,
+      vesmírné mise a jejich vědecké výsledky, kosmické technologie,
+      pozorování a observatoře.
+    excludes: >
+      Kosmický byznys a starty raket bez vědeckého obsahu (spadá spíš do
+      TECHNOLOGY, nebo se vynechá). Fyzikální teorie testované mimo
+      astronomický kontext (patří do PHYSICS).
+
+  BIOLOGY:
+    label_cz: Biologie
+    includes: >
+      Molekulární a buněčná biologie, genetika a genové editace,
+      neurověda, evoluce, mikrobiologie, zoologie a botanika,
+      paleontologie, medicínský výzkum a klinické studie, imunologie.
+    excludes: >
+      Ekologie celých ekosystémů a biodiverzita v kontextu ochrany přírody
+      (patří do ENVIRONMENT). Zdravotní rady a lifestylový obsah.
+      Biotechnologie jako produkt nebo firma (patří do TECHNOLOGY).
+
+  ENVIRONMENT:
+    label_cz: Prostředí
+    includes: >
+      Klimatologie a klimatická změna, meteorologie, oceánografie,
+      geologie a vědy o Zemi, ekologie a biodiverzita, ochrana přírody,
+      znečištění, zemědělství a půda, obnovitelné zdroje z hlediska
+      dopadu na prostředí.
+    excludes: >
+      Energetické technologie popisované primárně jako technologie
+      (patří do TECHNOLOGY). Klimatická politika bez vědeckého obsahu.
+      Biologie jednotlivých organismů mimo ekosystémový kontext
+      (patří do BIOLOGY).
+
+  TECHNOLOGY:
+    label_cz: Technologie
+    includes: >
+      Umělá inteligence a strojové učení, výpočetní technika, robotika,
+      kyberbezpečnost, inženýrství, energetické technologie, výrobní
+      postupy, aplikovaná biotechnologie, dopad technologií na společnost
+      tam, kde je jádrem technologie sama.
+    excludes: >
+      Recenze spotřebních produktů, oznámení produktů a firemní PR bez
+      výzkumného obsahu. Startupové financování a byznysové zprávy.
+      Teoretická informatika a matematika (patří do PHYSICS).
+
+# ---------------------------------------------------------------------------
+# Pravidla pro hraniční případy
+# ---------------------------------------------------------------------------
+rules:
+  - "Rozhoduje předmět výzkumu, ne obor autorů. Studie fyziků o šíření
+     dezinformací je SOCIETY."
+  - "Když se položka hodí do dvou kategorií, vyhrává ta, do které patří
+     hlavní zjištění — ne ta, ze které pochází metoda."
+  - "Když se nehodí ani do jedné, není to důvod ji někam vecpat. Dej jí
+     nízké skóre a nech ji propadnout triáží."
+  - "ALL není kategorie. Nikdy ji nevracej."

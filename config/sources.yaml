@@ -1,0 +1,478 @@
+# ---------------------------------------------------------------------------
+# ZDROJE PROUDU
+#
+# Sloučeno z RSS_FEEDS.xlsx a vedecke_rss_feedy_35.xlsx, odduplikováno
+# (normalizace: bez schématu, bez www., bez koncového lomítka).
+#
+# Pravidla, podle kterých je seznam sestavený:
+#
+#  1. Zastřešující ("firehose") feedy jsou vynechané, protože obsahují
+#     totéž co tematické feedy pod nimi a jen by zdvojovaly objem:
+#       phys.org/rss-feed/ · phys.org/rss-feed/breaking/
+#       sciencedaily.com/rss/all.xml · newscientist.com/feed/home/
+#     Tematické feedy mají navíc tu výhodu, že z nich jde odvodit
+#     default_category, takže triáž má výchozí tip a nehádá od nuly.
+#
+#  2. arXiv feedy (hep-ex, quant-ph, nucl-ex, physics, hep-th, q-bio) jsou
+#     vynechané po dohodě — preprinty bez recenze, objem stovek položek
+#     denně, psané pro odborníky. Stejná témata pokrývají Quanta Magazine,
+#     Physics World, APS Physics (redakční výběr z Physical Review),
+#     PLOS Biology, The Scientist a Cell/Neuron — už protříděná.
+#
+#  3. openlab-archive-iv-v.web.cern.ch vynechán: podle URL jde o archiv
+#     staré verze webu CERN openlab, tedy nejspíš mrtvý feed.
+#
+# Pole u každého zdroje:
+#   name             — lidský název, ukládá se do raw_items.source
+#   url              — adresa feedu
+#   default_category — výchozí tip pro triáž. Když chybí, triáž rozhoduje
+#                      bez nápovědy (u mezioborových zdrojů je to správně).
+#   tier             — core / wide / corporate; viz settings.yaml,
+#                      slouží k případnému zúžení bez mazání řádků.
+#   enabled          — false = zdroj se přeskočí, ale zůstane v evidenci
+# ---------------------------------------------------------------------------
+
+sources:
+
+  # ---------------------------------------------------------------- OBECNÉ --
+  # Mezioborové zdroje bez default_category — kategorii určí triáž.
+
+  - name: Nature
+    url: https://www.nature.com/nature.rss
+    tier: core
+    enabled: true
+
+  - name: Quanta Magazine
+    url: https://www.quantamagazine.org/feed/
+    tier: core
+    enabled: true
+
+  - name: Live Science
+    url: https://www.livescience.com/feeds.xml
+    tier: wide
+    enabled: true
+
+  - name: Sci-News
+    url: https://www.sci-news.com/feed
+    tier: wide
+    enabled: true
+
+  - name: SciTechDaily
+    url: https://scitechdaily.com/feed/
+    tier: wide
+    enabled: true
+
+  - name: The Conversation
+    url: https://theconversation.com/global/home-page.atom
+    tier: wide
+    enabled: true
+
+  - name: Guardian Science
+    url: https://www.theguardian.com/science/rss
+    tier: core
+    enabled: true
+
+  - name: BBC Science & Environment
+    url: https://feeds.bbci.co.uk/news/science_and_environment/rss.xml
+    tier: core
+    enabled: true
+
+  - name: Phys.org Mathematics
+    url: https://phys.org/rss-feed/science-news/mathematics/
+    tier: wide
+    enabled: true
+
+  # ---------------------------------------------------------------- PHYSICS --
+
+  - name: Physics World
+    url: https://physicsworld.com/feed/
+    default_category: PHYSICS
+    tier: core
+    enabled: true
+
+  - name: APS Physics Magazine
+    url: https://feeds.aps.org/rss/recent/physics.xml
+    default_category: PHYSICS
+    tier: core
+    enabled: true
+
+  - name: Phys.org Physics
+    url: https://phys.org/rss-feed/physics-news/
+    default_category: PHYSICS
+    tier: core
+    enabled: true
+
+  - name: ScienceDaily Physics
+    url: https://www.sciencedaily.com/rss/matter_energy/physics.xml
+    default_category: PHYSICS
+    tier: wide
+    enabled: true
+
+  - name: New Scientist Physics
+    url: https://www.newscientist.com/subject/physics/feed/
+    default_category: PHYSICS
+    tier: core
+    enabled: true
+
+  - name: Guardian Physics
+    url: https://www.theguardian.com/science/physics/rss
+    default_category: PHYSICS
+    tier: wide
+    enabled: true
+
+  # -------------------------------------------------------------- CHEMISTRY --
+
+  - name: Chemistry World
+    url: https://www.chemistryworld.com/413.rss
+    default_category: CHEMISTRY
+    tier: core
+    enabled: true
+
+  - name: Nature Chemistry
+    url: https://www.nature.com/nchem.rss
+    default_category: CHEMISTRY
+    tier: core
+    enabled: true
+
+  - name: C&EN
+    url: https://cen.acs.org/feeds/rss/latest
+    default_category: CHEMISTRY
+    tier: core
+    enabled: true
+
+  - name: Phys.org Chemistry
+    url: https://phys.org/rss-feed/chemistry-news/
+    default_category: CHEMISTRY
+    tier: core
+    enabled: true
+
+  - name: Phys.org Materials Science
+    url: https://phys.org/rss-feed/chemistry-news/materials-science/
+    default_category: CHEMISTRY
+    tier: wide
+    enabled: true
+
+  - name: Phys.org Polymers
+    url: https://phys.org/rss-feed/chemistry-news/polymers/
+    default_category: CHEMISTRY
+    tier: wide
+    enabled: true
+
+  - name: ScienceDaily Chemistry
+    url: https://www.sciencedaily.com/rss/matter_energy/chemistry.xml
+    default_category: CHEMISTRY
+    tier: wide
+    enabled: true
+
+  # ------------------------------------------------------------------ SPACE --
+
+  - name: NASA Breaking News
+    url: https://www.nasa.gov/rss/dyn/breaking_news.rss
+    default_category: SPACE
+    tier: core
+    enabled: true
+
+  - name: NASA Artemis
+    url: https://www.nasa.gov/missions/artemis/feed/
+    default_category: SPACE
+    tier: wide
+    enabled: true
+
+  - name: ESA Top News
+    url: https://www.esa.int/rssfeed/TopNews
+    default_category: SPACE
+    tier: core
+    enabled: true
+
+  - name: Space.com
+    url: https://www.space.com/feeds.xml
+    default_category: SPACE
+    tier: wide
+    enabled: true
+
+  - name: Phys.org Space
+    url: https://phys.org/rss-feed/space-news/
+    default_category: SPACE
+    tier: core
+    enabled: true
+
+  - name: Sky & Telescope
+    url: https://www.skyandtelescope.com/astronomy-news/feed/
+    default_category: SPACE
+    tier: wide
+    enabled: true
+
+  - name: Guardian Astronomy
+    url: https://www.theguardian.com/science/astronomy/rss
+    default_category: SPACE
+    tier: wide
+    enabled: true
+
+  - name: New Scientist Space
+    url: https://www.newscientist.com/subject/space/feed/
+    default_category: SPACE
+    tier: core
+    enabled: true
+
+  # ---------------------------------------------------------------- BIOLOGY --
+
+  - name: PLOS Biology
+    url: https://journals.plos.org/plosbiology/feed/atom
+    default_category: BIOLOGY
+    tier: core
+    enabled: true
+
+  - name: The Scientist
+    url: https://www.the-scientist.com/rss
+    default_category: BIOLOGY
+    tier: core
+    enabled: true
+
+  - name: Cell — Neuron
+    url: https://www.cell.com/neuron/current.rss
+    default_category: BIOLOGY
+    tier: core
+    enabled: true
+
+  - name: Phys.org Biology
+    url: https://phys.org/rss-feed/biology-news/
+    default_category: BIOLOGY
+    tier: core
+    enabled: true
+
+  - name: Phys.org Evolution
+    url: https://phys.org/rss-feed/breaking/biology-news/evolution/
+    default_category: BIOLOGY
+    tier: wide
+    enabled: true
+
+  - name: Phys.org Paleontology
+    url: https://phys.org/rss-feed/breaking/biology-news/paleontology/
+    default_category: BIOLOGY
+    tier: wide
+    enabled: true
+
+  - name: ScienceDaily Plants & Animals
+    url: https://www.sciencedaily.com/rss/plants_animals.xml
+    default_category: BIOLOGY
+    tier: wide
+    enabled: true
+
+  - name: New Scientist Life
+    url: https://www.newscientist.com/subject/life/feed/
+    default_category: BIOLOGY
+    tier: core
+    enabled: true
+
+  - name: New Scientist Health
+    url: https://www.newscientist.com/subject/health/feed/
+    default_category: BIOLOGY
+    tier: wide
+    enabled: true
+
+  # CRISPR Therapeutics — firemní tiskové zprávy jedné společnosti.
+  # Ponecháno kvůli šíři, ale tier 'corporate': u těchhle zdrojů má triáž
+  # v promptu instrukci být přísnější (marketingový obsah, ne zpravodajství).
+  - name: CRISPR Therapeutics
+    url: https://crisprtx.gcs-web.com/rss/news-releases.xml
+    default_category: BIOLOGY
+    tier: corporate
+    enabled: true
+
+  # ------------------------------------------------------------ ENVIRONMENT --
+
+  - name: IPCC
+    url: https://www.ipcc.ch/feed/
+    default_category: ENVIRONMENT
+    tier: core
+    enabled: true
+
+  - name: Guardian Climate Crisis
+    url: https://www.theguardian.com/environment/climate-crisis/rss
+    default_category: ENVIRONMENT
+    tier: core
+    enabled: true
+
+  - name: Guardian Wildlife
+    url: https://www.theguardian.com/environment/wildlife/rss
+    default_category: ENVIRONMENT
+    tier: wide
+    enabled: true
+
+  - name: Guardian Energy
+    url: https://www.theguardian.com/environment/energy/rss
+    default_category: ENVIRONMENT
+    tier: wide
+    enabled: true
+
+  - name: ScienceDaily Environment
+    url: https://www.sciencedaily.com/rss/top/environment.xml
+    default_category: ENVIRONMENT
+    tier: core
+    enabled: true
+
+  - name: Phys.org Earth
+    url: https://phys.org/rss-feed/earth-news/
+    default_category: ENVIRONMENT
+    tier: core
+    enabled: true
+
+  - name: Phys.org Earth Sciences
+    url: https://phys.org/rss-feed/breaking/earth-news/earth-sciences/
+    default_category: ENVIRONMENT
+    tier: wide
+    enabled: true
+
+  - name: Phys.org Agriculture
+    url: https://phys.org/rss-feed/breaking/biology-news/agriculture/
+    default_category: ENVIRONMENT
+    tier: wide
+    enabled: true
+
+  - name: New Scientist Earth
+    url: https://www.newscientist.com/subject/earth/feed/
+    default_category: ENVIRONMENT
+    tier: core
+    enabled: true
+
+  # ------------------------------------------------------------- TECHNOLOGY --
+
+  - name: MIT Technology Review
+    url: https://www.technologyreview.com/feed/
+    default_category: TECHNOLOGY
+    tier: core
+    enabled: true
+
+  - name: Ars Technica
+    url: https://feeds.arstechnica.com/arstechnica/index
+    default_category: TECHNOLOGY
+    tier: core
+    enabled: true
+
+  - name: Wired
+    url: https://www.wired.com/feed/rss
+    default_category: TECHNOLOGY
+    tier: core
+    enabled: true
+
+  - name: The Verge
+    url: https://www.theverge.com/rss/index.xml
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: TechCrunch
+    url: https://techcrunch.com/feed/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: Guardian AI
+    url: https://www.theguardian.com/technology/artificialintelligenceai/rss
+    default_category: TECHNOLOGY
+    tier: core
+    enabled: true
+
+  - name: Guardian Technology Research
+    url: https://www.theguardian.com/technology/research/rss
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: New Scientist Technology
+    url: https://www.newscientist.com/subject/technology/feed/
+    default_category: TECHNOLOGY
+    tier: core
+    enabled: true
+
+  - name: BBC Technology
+    url: https://feeds.bbci.co.uk/news/technology/rss.xml
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: NASA Technology
+    url: https://www.nasa.gov/technology/feed/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: TechXplore Machine Learning & AI
+    url: https://techxplore.com/rss-feed/machine-learning-ai-news/
+    default_category: TECHNOLOGY
+    tier: core
+    enabled: true
+
+  - name: TechXplore Computer Sciences
+    url: https://techxplore.com/rss-feed/computer-sciences-news/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: TechXplore Energy & Green Tech
+    url: https://techxplore.com/rss-feed/energy-green-tech-news/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: TechXplore Security
+    url: https://techxplore.com/rss-feed/security-news/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: TechXplore Hi-Tech
+    url: https://techxplore.com/rss-feed/breaking/hi-tech-news/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  - name: TechXplore Consumer Gadgets
+    url: https://techxplore.com/rss-feed/consumer-gadgets-news/
+    default_category: TECHNOLOGY
+    tier: wide
+    enabled: true
+
+  # ---------------------------------------------------------------- SOCIETY --
+
+  - name: Aeon
+    url: https://aeon.co/feed.rss
+    default_category: SOCIETY
+    tier: core
+    enabled: true
+
+  - name: Pew Research Center
+    url: https://www.pewresearch.org/feed/
+    default_category: SOCIETY
+    tier: core
+    enabled: true
+
+  - name: LSE Impact of Social Sciences
+    url: https://feeds.feedburner.com/ImpactOfSocialSciences
+    default_category: SOCIETY
+    tier: wide
+    enabled: true
+
+  - name: MIT News — Social Sciences
+    url: https://news.mit.edu/rss/topic/social-sciences
+    default_category: SOCIETY
+    tier: wide
+    enabled: true
+
+  - name: Phys.org Social Sciences
+    url: https://phys.org/rss-feed/social-sciences-news/
+    default_category: SOCIETY
+    tier: core
+    enabled: true
+
+  - name: Phys.org Archaeology & Fossils
+    url: https://phys.org/rss-feed/science-news/archaeology-fossils/
+    default_category: SOCIETY
+    tier: wide
+    enabled: true
+
+  - name: New Scientist Humans
+    url: https://www.newscientist.com/subject/humans/feed/
+    default_category: SOCIETY
+    tier: core
+    enabled: true

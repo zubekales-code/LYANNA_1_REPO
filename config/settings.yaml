@@ -1,0 +1,122 @@
+# ---------------------------------------------------------------------------
+# NASTAVENÍ BĚHU
+#
+# Princip "konfigurace je data, ne kód": chování pipeline se mění tady,
+# ne v .py souborech.
+# ---------------------------------------------------------------------------
+
+# --- Sběr -------------------------------------------------------------------
+collect:
+  # Kolik položek se maximálně vezme z jednoho feedu za běh. Chrání proti
+  # feedu, který jednou za čas vysype celý archiv.
+  max_items_per_feed: 40
+
+  # Položky starší než tolik dní se zahodí už při sběru. Některé feedy
+  # (žurnály) drží v RSS i měsíce staré věci.
+  max_age_days: 4
+
+  # Vteřin na jeden feed. Feed, který se nestihne, se přeskočí a zaloguje —
+  # nikdy neshodí celý běh (princip fail-soft).
+  timeout_seconds: 20
+
+  # Kolik feedů se stahuje najednou.
+  workers: 8
+
+  # Zápis do raw_items po blocích téhle velikosti. Menší blok = menší
+  # ztráta, když jeden zápis selže.
+  upsert_batch_size: 20
+
+# --- Odstranění duplicit napříč zdroji ---------------------------------------
+# Jedna studie přijde z phys.org, ScienceDaily, New Scientist i Guardianu
+# jako čtyři různé URL. Unique na URL to nezachytí, tohle ano.
+dedup:
+  enabled: true
+
+  # Práh překryvu slovních kmenů dvou titulků (průnik ku menší z množin).
+  # Hodnota 0.5 je vyladěná na sadě reálných dvojic titulků — viz
+  # komentář v src/dedup.py. Zvýšit = opatrnější, snížit = agresivnější.
+  similarity_threshold: 0.5
+
+  # Kolik slov musí být sdílených v ABSOLUTNÍM počtu. Bez téhle podmínky
+  # spojí samotný poměr dvojice jako "CRISPR therapy restores vision"
+  # a "CRISPR therapy lowers cholesterol" — vysoký překryv na třech
+  # slovech, ale dvě různé zprávy.
+  min_shared_tokens: 4
+
+  # Slova pod tuhle délku se při porovnání ignorují.
+  min_token_length: 3
+
+# --- Triáž ------------------------------------------------------------------
+triage:
+  model: gpt-5.6-luna
+  # Reasoning effort. U triáže je to výběr z uzavřeného seznamu, tedy
+  # jednoduché rozhodnutí — nízké úsilí stačí a je výrazně levnější.
+  reasoning_effort: low
+  # Pozor: u reasoning modelů se do tohoto stropu počítá i neviditelná
+  # přemýšlecí fáze, ne jen viditelný výstup. Držet velkorysou rezervu.
+  max_output_tokens: 12000
+  # Velikost dávky. Větší dávka = model přeskakuje položky a komolí ID.
+  batch_size: 30
+  # Kolik nezpracovaných položek se vezme do jednoho běhu triáže.
+  max_items_per_run: 600
+  # Skóre 0–10. Nad prahem jde položka ke zpracování.
+  score_min: 8
+  # Rozmezí "čekárny" — položky se nezahazují, ale ani nezpracovávají.
+  waiting_room_min: 4
+  waiting_room_max: 7
+
+# --- Dotažení plného textu ---------------------------------------------------
+enrich:
+  # Jina Reader, volný endpoint (bez klíče). Když se objeví rate-limiting,
+  # založ si klíč a nastav JINA_API_KEY v prostředí — kód ho použije sám.
+  reader_endpoint: https://r.jina.ai/
+  timeout_seconds: 45
+  # Delší text se ořízne. Delší podklad už kvalitě článku nepomůže a jen
+  # zdražuje vstup.
+  max_chars: 20000
+  # Pod tolik znaků se dotažení považuje za neúspěšné (paywall, cookie zeď)
+  # a jede se dál z titulku a perexu.
+  min_chars: 600
+  # Vteřin mezi požadavky, aby se volný endpoint nepřetěžoval.
+  delay_seconds: 1.5
+
+# --- Psaní a překlad ---------------------------------------------------------
+write:
+  model: gpt-5.6-terra
+  # Psaní je to jediné, co čtenář posuzuje — vyšší úsilí je tu na místě.
+  reasoning_effort: medium
+  # Očekávaný viditelný výstup je ~700 slov (~1000 tokenů). Strop je
+  # záměrně mnohonásobně vyšší: neplatí se za nevyčerpaný strop, ale
+  # za uříznutý nebo prázdný výstup platíš celým během.
+  max_output_tokens: 16000
+
+  translate:
+    model: gpt-5.6-terra
+    reasoning_effort: low
+    max_output_tokens: 16000
+
+  # TVRDÝ STROP počtu článků za den. Vstup je po rozšíření na ~70 zdrojů
+  # zhruba čtyřikrát větší než dřív; bez tohohle limitu ti jeden bohatý
+  # den vygeneruje čtyřicet článků a odpovídající účet.
+  max_articles_per_day: 10
+
+  # Cílová délka článku ve slovech (měkké vodítko v promptu; tvrdou
+  # pojistkou je max_output_tokens výše).
+  target_words_min: 550
+  target_words_max: 800
+
+# --- Zdroje ------------------------------------------------------------------
+sources:
+  # Které úrovně zdrojů se sbírají. Zúžení na ["core"] je způsob, jak
+  # rychle a vratně snížit objem, aniž bys mazal řádky ze sources.yaml.
+  enabled_tiers: [core, wide, corporate]
+
+# --- Souběh s Make.com --------------------------------------------------------
+pipeline:
+  # Zapisuje se do articles.pipeline, aby šlo staré a nové články rozlišit.
+  # Po vypnutí Make.com a odstranění sloupce se tahle položka může smazat.
+  name: python
+
+# --- Logování ------------------------------------------------------------------
+logging:
+  level: INFO

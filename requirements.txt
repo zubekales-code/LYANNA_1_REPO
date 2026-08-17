@@ -1,0 +1,9 @@
+# Lyanna agent — závislosti
+#
+# Verze jsou zastropované na hlavní číslo, aby noční běh nespadl kvůli
+# breaking change v závislosti, o které nevíš.
+
+feedparser>=6.0.11,<7
+requests>=2.32,<3
+PyYAML>=6.0,<7
+openai>=1.60,<2
